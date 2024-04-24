@@ -10,8 +10,6 @@ load_dotenv()
 
 api_id = os.getenv("API_ID")
 api_hash = os.getenv("API_HASH")
-
-
 app = Client("she-bear", api_id, api_hash)
 msg_handler = message_handlers
 
@@ -26,34 +24,37 @@ def is_me(_, __, message):
 
 
 @app.on_message(filters.command("exec"))
-def evaluate_command(client, message):
+def execute_command(client, message):
     if message.from_user.id != my_id:
         return
 
-
     command = message.text[len("/exec"):].strip()
-
 
     try:
         if command.startswith("python"):
             command = command.replace("python", "", 1).lstrip()
             result = sp.run(["python3", "-c", command], capture_output=True, text=True)
 
-
             if result.returncode == 0:
-                client.send_message(message.chat.id, result.stdout)
+                if not result.stdout.strip():
+                    client.send_message(message.chat.id, "No output produced by the code")
+                else:
+                    client.send_message(message.chat.id, result.stdout)
             else:
-                client.send_message(message.chat.id, f"ашыпк выполнен: {result.stderr}")
+                client.send_message(message.chat.id, f"error: {result.stderr}")
+
         else:
             result = sp.run(command, shell=True, capture_output=True, text=True)
 
-
             if result.returncode == 0:
-                client.send_message(message.chat.id, result.stdout)
+                if not result.stdout.strip():
+                    client.send_message(message.chat.id, "No output produced by the command")
+                else:
+                    client.send_message(message.chat.id, result.stdout)
             else:
-                client.send_message(message.chat.id, f"ашыпк выполнен: {result.stderr}")
+                client.send_message(message.chat.id, f"error: {result.stderr}")
     except Exception as err:
-        client.send_message(message.chat.id, f"ашыпк: {err}")
+        client.send_message(message.chat.id, f"error: {err}")
 
 
 @app.on_message(filters.create(is_me))
