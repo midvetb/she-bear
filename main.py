@@ -38,12 +38,11 @@ def execute_command(client, message, timeout=60):
         else:
             result = sp.run(command, shell=True, capture_output=True, timeout=timeout, text=True)
 
-        if not result.stderr.strip():
-            return message.reply_text("error: output not captured")
-
         if result.returncode == 0:
             return message.reply_text(f"```\n{result.stdout}\n```")
         else:
+            if not result.stderr.strip():
+                return message.reply_text("error: output not captured")
             return message.reply_text(f"error: {result.stderr}")
 
     except sp.TimeoutExpired:
