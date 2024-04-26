@@ -24,7 +24,7 @@ def is_me(_, __, message):
 
 
 @app.on_message(filters.command("exec"))
-def execute_command(client, message):
+def execute_command(client, message, timeout=60):
     if message.from_user.id != my_id:
         return
 
@@ -33,33 +33,29 @@ def execute_command(client, message):
     try:
         if command.startswith("python"):
             command = command.replace("python", "", 1).lstrip()
-            result = sp.run(["python3", "-c", command], capture_output=True, text=True)
-
-            if result.returncode == 0:
-                if not result.stdout.strip():
-                    client.send_message(message.chat.id, "No output produced by the code")
-                else:
-                    client.send_message(message.chat.id, result.stdout)
-            else:
-                client.send_message(message.chat.id, f"error: {result.stderr}")
+            result = sp.run(["python3", "-c", command], capture_output=True, timeout=timeout, text=True)
 
         else:
-            result = sp.run(command, shell=True, capture_output=True, text=True)
+            result = sp.run(command, shell=True, capture_output=True, timeout=timeout, text=True)
 
-            if result.returncode == 0:
-                if not result.stdout.strip():
-                    client.send_message(message.chat.id, "No output produced by the command")
-                else:
-                    client.send_message(message.chat.id, result.stdout)
-            else:
-                client.send_message(message.chat.id, f"error: {result.stderr}")
+        if not result.stderr.strip():
+            return message.reply_text("error: output not captured")
+
+        if result.returncode == 0:
+            return message.reply_text(f"```\n{result.stdout}\n```")
+        else:
+            return message.reply_text(f"error: {result.stderr}")
+
+    except sp.TimeoutExpired:
+        return message.reply_text("The request timed out")
+
     except Exception as err:
-        client.send_message(message.chat.id, f"error: {err}")
+        return message.reply_text(f"error: {err}")
 
 
 @app.on_message(filters.create(is_me))
 def handler_message(client, message):
     msg_handler.handle_message(client, message)
 
-
-app.run()
+if __name__ == "__main__":
+    app.run()
