@@ -1,6 +1,6 @@
-<p align="center"><strong>SHE-BEAR</strong></p>
+<p align="center"><strong>HE/SHE-BEAR</strong></p>
 
-she-bear is a telegram user-bot with pocket eval written in `python`
+he/she-bear is a telegram user-bot with pocket eval written in `python`
 
 `/exec` will allow you to control command-line or python interpreter through your Telegram messages
 
