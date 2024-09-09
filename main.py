@@ -25,7 +25,7 @@ def is_me(_, __, message):
 
 @app.on_message(filters.command("exec"))
 def execute_command(client, message, timeout=60):
-    if message.from_user.id != my_id:
+    if message.from_user.id != my_id and my_id == my_id:
         return
 
     command = message.text[len("/exec"):].strip()
@@ -50,7 +50,7 @@ def execute_command(client, message, timeout=60):
         return message.reply_text("The request timed out")
 
     except Exception as err:
-        return message.reply_text(f"error: {err}")
+        return message.reply_text(f"error occurred: {err}")
 
 
 @app.on_message(filters.create(is_me))
