@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="280px" src="https://github.com/user-attachments/assets/6dbc2f08-494a-41e7-b1cf-ec8d91676402" alt="...">
+</p>
+
 <p align="center"><strong>SHE-BEAR</strong></p>
 
 she-bear is a telegram user-bot with pocket eval written in `python`
