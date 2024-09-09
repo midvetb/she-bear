@@ -8,7 +8,7 @@ import os
 load_dotenv()
 
 
-api_id = os.getenv("API_ID")
+api_id = os.getenv("API_ID") or os.getenv("API_ID_СЕКС")
 api_hash = os.getenv("API_HASH")
 app = Client("she-bear", api_id, api_hash)
 msg_handler = message_handlers
